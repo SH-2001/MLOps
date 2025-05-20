@@ -46,6 +46,8 @@ jobs:
 
       - name: Terraform Plan
         run: terraform plan -no-color --var-file='../environments/dev.tfvars'
+        working-directory: terraform
 
       - name: Terraform Apply
         run: terraform apply --var-file='../environments/dev.tfvars' -auto-approve
+        working-directory: terraform
