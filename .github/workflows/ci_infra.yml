@@ -45,9 +45,9 @@ jobs:
         run: terraform validate -no-color
 
       - name: Terraform Plan
-        run: terraform plan -no-color --var-file='../environments/dev.tfvars'
+        run: terraform plan -no-color --var-file='environments/dev.tfvars'
         working-directory: MLOps_2/terraform
 
       - name: Terraform Apply
-        run: terraform apply --var-file='../environments/dev.tfvars' -auto-approve
+        run: terraform apply --var-file='environments/dev.tfvars' -auto-approve
         working-directory: MLOps_2/terraform
