@@ -175,4 +175,3 @@ cython_debug/
 
 # Terraform
 .terraform
-MLOps_2/terraform/.terraform.lock.hcl
