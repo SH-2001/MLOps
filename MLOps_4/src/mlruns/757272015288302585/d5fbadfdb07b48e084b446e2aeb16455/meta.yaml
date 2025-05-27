@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/4444s/OneDrive/Documenten/GitHub/MLOps/MLOps_4/src/mlruns/757272015288302585/d5fbadfdb07b48e084b446e2aeb16455/artifacts
+end_time: 1748351317210
+entry_point_name: ''
+experiment_id: '757272015288302585'
+lifecycle_stage: active
+run_id: d5fbadfdb07b48e084b446e2aeb16455
+run_name: calm-swan-762
+run_uuid: d5fbadfdb07b48e084b446e2aeb16455
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1748351208356
+status: 3
+tags: []
+user_id: 4444s
