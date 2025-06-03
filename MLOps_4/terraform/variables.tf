@@ -1,6 +1,6 @@
 variable "aws_region" {
   description = "AWS region"
-  default     = "eu-north-1"
+  default     = "eu-west-1"
 }
 
 variable "environment" {
@@ -23,6 +23,12 @@ variable "s3_buckets" {
 
 variable "ecr_repositories" {
   description = "A list of ECR Repositories"
+  type        = list(any)
+  default     = []
+}
+
+variable "apprunner_services" {
+  description = "A list of App Runner Services"
   type        = list(any)
   default     = []
 }
