@@ -55,5 +55,9 @@ class Trainer:
         self.pipeline.fit(X_train, y_train)
 
     def save_model(self):
+        model_dir = "models"
+        if not os.path.exists(model_dir):
+            os.makedirs(model_dir)
+
         model_file_path = os.path.join(self.model_path, 'model.pkl')
         joblib.dump(self.pipeline, model_file_path)
