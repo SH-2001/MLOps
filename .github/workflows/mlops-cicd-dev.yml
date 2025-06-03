@@ -1,4 +1,4 @@
-name: mlops-cicd-dev
+name: application-cicd-dev
 
 # Controls when the workflow will run
 on:
@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [ "main" ]
     paths: 
-      - 'MLOps_4/terraform/**'
+      - 'MLOps_4/src/**'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -17,21 +17,34 @@ jobs:
     environment: AWS
     defaults:
       run:
-        working-directory: MLOps_4/terraform
-    permissions:
-        issues: write
-
+        working-directory: MLOps_4/src
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: eu-north-1
+          aws-region: eu-west-1
+
+      - name: Pull latest data with DVC
+        run: dvc pull
+
+      - name: Retrain model
+        run: python main.py
       
       - name: Login to Amazon ECR
         id: login-ecr
