@@ -4,7 +4,7 @@ aws_region  = "eu-west-2"
 
 s3_buckets = [
   {
-    key  = "mlops-course-ehb-data-sh11"
+    key  = "mlops-course-ehb-data-sh11-2"
     tags = {}
   }
 ]
