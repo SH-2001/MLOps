@@ -35,7 +35,7 @@ def mlflow_main():
         trainer = Trainer()
         X_train, y_train = trainer.feature_target_separator(train_data)
         trainer.train_model(X_train, y_train)
-        # trainer.save_model()
+        trainer.save_model()
         logging.info("Model training completed successfully")
 
         # Evaluate model

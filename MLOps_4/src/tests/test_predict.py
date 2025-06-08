@@ -45,12 +45,6 @@ def test_evaluate_model(sample_data):
     dummy_model = DummyClassifier(strategy="most_frequent")
     dummy_model.fit(X, y)
 
-    # Mock YAML config and joblib.load
-    mock_yaml = """
-    model:
-      store_path: "fake_path"
-    """
-
     with patch("builtins.open", mock_open(read_data=mock_yaml)):
         with patch("joblib.load", return_value=dummy_model):
             pred = Predictor()

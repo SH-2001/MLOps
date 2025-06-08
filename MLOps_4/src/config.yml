@@ -18,6 +18,7 @@ model:
   params:
      max_depth: null
      n_estimators: 10
+  store_path: models/
 
   # name: RandomForestClassifier
   # params:
