@@ -1,9 +1,14 @@
 import os
 import pandas as pd
 from unittest.mock import patch, mock_open
+
+import pytest
+
 from ..pipelines.train import Trainer
 
-df = pd.DataFrame(
+@pytest.fixture
+def df():
+    return pd.DataFrame(
     {
         "AnnualPremium": [1000, 1200, 1100, 1300, 1250, 1400, 1380, 900],
         "Age": [30, 40, 35, 45, 50, 55, 56, 31],
@@ -24,11 +29,13 @@ df = pd.DataFrame(
     }
 )
 
-mock_yaml = """
+@pytest.fixture
+def mock_yaml(tmp_path):
+    return f"""
     model:
       name: "RandomForestClassifier"
-      params: {}
-      store_path: "mock_model_dir"
+      params: {{}}
+      store_path: "{tmp_path}"
     """
 
 
