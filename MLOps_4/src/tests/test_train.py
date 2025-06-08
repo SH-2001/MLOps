@@ -8,13 +8,13 @@ def test_pipeline_training():
     # Minimal sample input DataFrame
     df = pd.DataFrame(
         {
-            "AnnualPremium": [1000, 1200],
-            "Age": [30, 40],
-            "RegionID": [1, 2],
-            "Gender": ["Male", "Female"],
-            "PastAccident": ["Yes", "No"],
-            "HasDrivingLicense": [1, 1],
-            "Switch": [0, 1],
+            "AnnualPremium": [1000, 1200, 1100, 1300, 1250, 1400],
+            "Age": [30, 40, 35, 45, 50, 55],
+            "RegionID": [1, 2, 1, 2, 1, 2],
+            "Gender": ["Male", "Female", "Male", "Female", "Male", "Female"],
+            "PastAccident": ["Yes", "No", "Yes", "No", "Yes", "No"],
+            "HasDrivingLicense": [1, 1, 1, 1, 1, 1],
+            "Switch": [0, 1, 0, 1, 0, 1],
         }
     )
 

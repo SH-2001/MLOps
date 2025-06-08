@@ -17,10 +17,17 @@ def sample_data():
 
 
 def test_feature_target_separator(sample_data):
-    pred = Predictor()
-    X, y = pred.feature_target_separator(sample_data)
-    assert list(X.columns) == ["feature1", "feature2"]
-    assert list(y) == [0, 1, 0, 1]
+    mock_yaml = """
+        model:
+          name: "RandomForestClassifier"
+          params: {}
+          store_path: "mock_model_path"
+        """
+    with patch("builtins.open", mock_open(read_data=mock_yaml)):
+        pred = Predictor()
+        X, y = pred.feature_target_separator(sample_data)
+        assert list(X.columns) == ["feature1", "feature2"]
+        assert list(y) == [0, 1, 0, 1]
 
 
 def test_evaluate_model(sample_data):
