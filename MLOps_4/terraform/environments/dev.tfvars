@@ -6,15 +6,13 @@ s3_buckets = [
   {
     key  = "mlops-course-ehb-data-sh11-2"
     tags = {}
-  }
-]
-
-s3_buckets = [
+  },
   {
     key  = "mlops-course-ehb-mlruns-sh11"
     tags = {}
   }
 ]
+
 
 ecr_repositories = [
   {
