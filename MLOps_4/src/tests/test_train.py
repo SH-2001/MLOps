@@ -3,28 +3,26 @@ import pandas as pd
 from unittest.mock import patch, mock_open
 from ..pipelines.train import Trainer
 
+df = pd.DataFrame(
+    {
+        "AnnualPremium": [1000, 1200, 1100, 1300, 1250, 1400, 1380, 900],
+        "Age": [30, 40, 35, 45, 50, 55, 56, 31],
+        "RegionID": [1, 2, 1, 2, 1, 2, 2, 1],
+        "Gender": ["Male", "Female", "Male", "Female", "Male", "Female", "Male", "Male"],
+        "PastAccident": ["Yes", "No", "Yes", "No", "Yes", "No", "No", "Yes"],
+        "HasDrivingLicense": [1, 1, 1, 1, 1, 1, 1, 1],
+        "Switch": [0, 1, 0, 1, 0, 1, 1, 0],
+    }
+)
 
-def test_pipeline_training():
-    # Minimal sample input DataFrame
-    df = pd.DataFrame(
-        {
-            "AnnualPremium": [1000, 1200, 1100, 1300, 1250, 1400],
-            "Age": [30, 40, 35, 45, 50, 55],
-            "RegionID": [1, 2, 1, 2, 1, 2],
-            "Gender": ["Male", "Female", "Male", "Female", "Male", "Female"],
-            "PastAccident": ["Yes", "No", "Yes", "No", "Yes", "No"],
-            "HasDrivingLicense": [1, 1, 1, 1, 1, 1],
-            "Switch": [0, 1, 0, 1, 0, 1],
-        }
-    )
-
-    mock_yaml = """
+mock_yaml = """
     model:
       name: "RandomForestClassifier"
       params: {}
       store_path: "mock_model_dir"
     """
 
+def test_pipeline_training(df, mock_yaml):
     with patch("builtins.open", mock_open(read_data=mock_yaml)):
         trainer = Trainer()
         X, y = trainer.feature_target_separator(df)
@@ -35,26 +33,7 @@ def test_pipeline_training():
         assert len(predictions) == len(y)
 
 
-def test_save_model_creates_directory_and_saves_file(tmp_path):
-    mock_yaml = f"""
-    model:
-        name: "RandomForestClassifier"
-        params: {{}}
-        store_path: "{tmp_path}"
-    """
-
-    df = pd.DataFrame(
-        {
-            "AnnualPremium": [1000, 1200],
-            "Age": [30, 40],
-            "RegionID": [1, 2],
-            "Gender": ["Male", "Female"],
-            "PastAccident": ["Yes", "No"],
-            "HasDrivingLicense": [1, 1],
-            "Switch": [0, 1],
-        }
-    )
-
+def test_save_model_creates_directory_and_saves_file(tmp_path, df, mock_yaml):
     with patch("builtins.open", mock_open(read_data=mock_yaml)):
         with patch("joblib.dump") as mock_dump:
             trainer = Trainer()

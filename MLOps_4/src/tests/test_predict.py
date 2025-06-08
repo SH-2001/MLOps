@@ -1,6 +1,6 @@
 import pytest
 import pandas as pd
-from unittest.mock import patch, mock_open
+from unittest.mock import patch, MagicMock,mock_open
 from sklearn.dummy import DummyClassifier
 from ..pipelines.predict import Predictor
 
@@ -16,18 +16,23 @@ def sample_data():
     )
 
 
-def test_feature_target_separator(sample_data):
-    mock_yaml = """
-        model:
-          name: "RandomForestClassifier"
-          params: {}
-          store_path: "mock_model_path"
-        """
-    with patch("builtins.open", mock_open(read_data=mock_yaml)):
-        pred = Predictor()
-        X, y = pred.feature_target_separator(sample_data)
-        assert list(X.columns) == ["feature1", "feature2"]
-        assert list(y) == [0, 1, 0, 1]
+mock_yaml = """
+    model:
+      name: "RandomForestClassifier"
+      params: {}
+      store_path: "mock_model_path"
+    """
+
+@patch("joblib.load")
+@patch("builtins.open", new_callable=mock_open, read_data=mock_yaml)
+def test_feature_target_separator(mock_file, mock_joblib_load, sample_data):
+    mock_model = MagicMock()
+    mock_model.predict.return_value = [0, 1, 0, 1]
+    mock_joblib_load.return_value = mock_model
+    pred = Predictor()
+    X, y = pred.feature_target_separator(sample_data)
+    assert list(X.columns) == ["feature1", "feature2"]
+    assert list(y) == [0, 1, 0, 1]
 
 
 def test_evaluate_model(sample_data):
