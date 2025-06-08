@@ -1,6 +1,6 @@
 import pytest
 import pandas as pd
-from unittest.mock import patch, MagicMock,mock_open
+from unittest.mock import patch, MagicMock, mock_open
 from sklearn.dummy import DummyClassifier
 from ..pipelines.predict import Predictor
 
@@ -22,6 +22,7 @@ mock_yaml = """
       params: {}
       store_path: "mock_model_path"
     """
+
 
 @patch("joblib.load")
 @patch("builtins.open", new_callable=mock_open, read_data=mock_yaml)
