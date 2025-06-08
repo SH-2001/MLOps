@@ -12,7 +12,7 @@ model:
   #params:
   #  criterion: entropy
   #  max_depth: null
-  #store_path: models/
+
 
   name: GradientBoostingClassifier
   params:
@@ -25,4 +25,3 @@ model:
   #   n_estimators: 50
   #   max_depth: 10
   #   random_state: 42
-  # store_path: models/
