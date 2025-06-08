@@ -8,11 +8,11 @@ from pipelines.train import Trainer
 from pipelines.predict import Predictor
 from sklearn.metrics import classification_report
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s:%(levelname)s:%(message)s")
 
 
 def mlflow_main():
-    with open('config.yml', 'r') as file:
+    with open("config.yml", "r") as file:
         config = yaml.safe_load(file)
 
     mlflow.set_experiment("Model Training Experiment")
@@ -39,27 +39,28 @@ def mlflow_main():
         # Evaluate model
         predictor = Predictor()
         X_test, y_test = predictor.feature_target_separator(test_data)
-        accuracy, class_report, roc_auc_score = predictor.evaluate_model(X_test, y_test)
-        report = classification_report(y_test, trainer.pipeline.predict(X_test), output_dict=True)
+        acc, class_report, roc_auc_score = predictor.evaluate_model(X_test, y_test)
+        report = classification_report(
+            y_test, trainer.pipeline.predict(X_test), output_dict=True
+        )
         logging.info("Model evaluation completed successfully")
 
         # Tags
-        mlflow.set_tag('preprocessing', 'OneHotEncoder, Standard Scaler, and MinMax Scaler')
+        mlflow.set_tag(
+            "preprocessing", "OneHotEncoder, Standard Scaler, and MinMax Scaler"
+        )
 
         # Inferring the input signature
         signature = mlflow.models.infer_signature(
-            model_input=X_train,
-            model_output=trainer.pipeline.predict(X_test)
+            model_input=X_train, model_output=trainer.pipeline.predict(X_test)
         )
 
         client = mlflow.MlflowClient()
 
         # Compare against the best previous ROC AUC
-        experiment_id = mlflow.get_experiment_by_name("Model Training Experiment").experiment_id
+        ex_id = mlflow.get_experiment_by_name("Model Training Experiment").experiment_id
         previous_best = client.search_runs(
-            experiment_ids=[experiment_id],
-            order_by=["metrics.roc DESC"],
-            max_results=1
+            experiment_ids=[ex_id], order_by=["metrics.roc DESC"], max_results=1
         )
 
         if previous_best and len(previous_best) > 0:
@@ -70,12 +71,12 @@ def mlflow_main():
             logging.info("No previous model found, treating as first run.")
 
         # Log metrics
-        model_params = config['model']['params']
+        model_params = config["model"]["params"]
         mlflow.log_params(model_params)
-        mlflow.log_metric("accuracy", accuracy)
+        mlflow.log_metric("accuracy", acc)
         mlflow.log_metric("roc", roc_auc_score)
-        mlflow.log_metric('precision', report['weighted avg']['precision'])
-        mlflow.log_metric('recall', report['weighted avg']['recall'])
+        mlflow.log_metric("precision", report["weighted avg"]["precision"])
+        mlflow.log_metric("recall", report["weighted avg"]["recall"])
         mlflow.sklearn.log_model(trainer.pipeline, "model", signature=signature)
 
         # Register the model
@@ -92,7 +93,7 @@ def mlflow_main():
         # Print evaluation results
         print("\n============= Model Evaluation Results ==============")
         print(f"Model: {trainer.model_name}")
-        print(f"Accuracy Score: {accuracy:.4f}, ROC AUC Score: {roc_auc_score:.4f}")
+        print(f"Accuracy Score: {acc:.4f}, ROC AUC Score: {roc_auc_score:.4f}")
         print(f"\n{class_report}")
         print("=====================================================\n")
 
