@@ -52,6 +52,23 @@ def mlflow_main():
             model_output=trainer.pipeline.predict(X_test)
         )
 
+        client = mlflow.MlflowClient()
+
+        # Compare against the best previous ROC AUC
+        experiment_id = mlflow.get_experiment_by_name("Model Training Experiment").experiment_id
+        previous_best = client.search_runs(
+            experiment_ids=[experiment_id],
+            order_by=["metrics.roc DESC"],
+            max_results=1
+        )
+
+        if previous_best and len(previous_best) > 0:
+            best_prev_roc = previous_best[0].data.metrics["roc"]
+            logging.info(f"Best previous ROC AUC: {best_prev_roc:.4f}")
+        else:
+            best_prev_roc = -1
+            logging.info("No previous model found, treating as first run.")
+
         # Log metrics
         model_params = config['model']['params']
         mlflow.log_params(model_params)
@@ -62,18 +79,22 @@ def mlflow_main():
         mlflow.sklearn.log_model(trainer.pipeline, "model", signature=signature)
 
         # Register the model
-        model_name = "insurance_model"
-        model_uri = f"runs:/{run.info.run_id}/model"
-        mlflow.register_model(model_uri, model_name)
+        if roc_auc_score > best_prev_roc:
+            logging.info("New model outperforms previous best. Registering model.")
+            model_name = "insurance_model"
+            model_uri = f"runs:/{run.info.run_id}/model"
+            mlflow.register_model(model_uri, model_name)
+        else:
+            logging.info("Model is not better than previous. Skipping registration.")
 
         logging.info("MLflow tracking completed successfully")
 
         # Print evaluation results
-        print("n============= Model Evaluation Results ==============")
+        print("\n============= Model Evaluation Results ==============")
         print(f"Model: {trainer.model_name}")
         print(f"Accuracy Score: {accuracy:.4f}, ROC AUC Score: {roc_auc_score:.4f}")
-        print(f"n{class_report}")
-        print("=====================================================n")
+        print(f"\n{class_report}")
+        print("=====================================================\n")
 
 
 if __name__ == "__main__":
