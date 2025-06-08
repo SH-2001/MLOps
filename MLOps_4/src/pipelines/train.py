@@ -1,5 +1,4 @@
 import os
-import joblib
 import yaml
 from sklearn.preprocessing import StandardScaler, OneHotEncoder, MinMaxScaler
 from sklearn.compose import ColumnTransformer
@@ -14,7 +13,6 @@ class Trainer:
         self.config = self.load_config()
         self.model_name = self.config["model"]["name"]
         self.model_params = self.config["model"]["params"]
-        self.model_path = self.config["model"]["store_path"]
         self.pipeline = self.create_pipeline()
 
     def load_config(self):
@@ -68,5 +66,5 @@ class Trainer:
         if not os.path.exists(model_dir):
             os.makedirs(model_dir)
 
-        model_file_path = os.path.join(self.model_path, "model.pkl")
-        joblib.dump(self.pipeline, model_file_path)
+        # model_file_path = os.path.join(self.model_path, "model.pkl")
+        # joblib.dump(self.pipeline, model_file_path)
