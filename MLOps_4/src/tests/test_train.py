@@ -6,28 +6,39 @@ import pytest
 
 from ..pipelines.train import Trainer
 
+
 @pytest.fixture
 def df():
     return pd.DataFrame(
-    {
-        "AnnualPremium": [1000, 1200, 1100, 1300, 1250, 1400, 1380, 900],
-        "Age": [30, 40, 35, 45, 50, 55, 56, 31],
-        "RegionID": [1, 2, 1, 2, 1, 2, 2, 1],
-        "Gender": [
-            "Male",
-            "Female",
-            "Male",
-            "Female",
-            "Male",
-            "Female",
-            "Male",
-            "Male",
-        ],
-        "PastAccident": ["Yes", "No", "Yes", "No", "Yes", "No", "No", "Yes"],
-        "HasDrivingLicense": [1, 1, 1, 1, 1, 1, 1, 1],
-        "Switch": [0, 1, 0, 1, 0, 1, 1, 0],
-    }
-)
+        {
+            "AnnualPremium": [1000, 1200, 1100, 1300, 1250, 1400, 1380, 900],
+            "Age": [30, 40, 35, 45, 50, 55, 56, 31],
+            "RegionID": [1, 2, 1, 2, 1, 2, 2, 1],
+            "Gender": [
+                "Male",
+                "Female",
+                "Male",
+                "Female",
+                "Male",
+                "Female",
+                "Male",
+                "Male",
+            ],
+            "PastAccident": [
+                "Yes",
+                "No",
+                "Yes",
+                "No",
+                "Yes",
+                "No",
+                "No",
+                "Yes",
+            ],
+            "HasDrivingLicense": [1, 1, 1, 1, 1, 1, 1, 1],
+            "Switch": [0, 1, 0, 1, 0, 1, 1, 0],
+        }
+    )
+
 
 @pytest.fixture
 def mock_yaml(tmp_path):
