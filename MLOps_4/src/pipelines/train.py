@@ -46,7 +46,11 @@ class Trainer:
         model = model_class(**self.model_params)
 
         pipeline = Pipeline(
-            [("preprocessor", preprocessor), ("smote", smote), ("model", model)]
+            [
+                ("preprocessor", preprocessor),
+                ("smote", smote),
+                ("model", model),
+            ]
         )
 
         return pipeline

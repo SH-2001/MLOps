@@ -4,7 +4,9 @@ from sklearn.impute import SimpleImputer
 
 class Cleaner:
     def __init__(self):
-        self.imputer = SimpleImputer(strategy="most_frequent", missing_values=np.nan)
+        self.imputer = SimpleImputer(
+            strategy="most_frequent", missing_values=np.nan
+        )
 
     def clean_data(self, data):
         data.drop(
@@ -26,7 +28,9 @@ class Cleaner:
         data["Age"] = data["Age"].fillna(data["Age"].median())
         data["HasDrivingLicense"] = data["HasDrivingLicense"].fillna(1)
         data["Switch"] = data["Switch"].fillna(-1)
-        data["PastAccident"] = data["PastAccident"].fillna("Unknown", inplace=False)
+        data["PastAccident"] = data["PastAccident"].fillna(
+            "Unknown", inplace=False
+        )
 
         Q1 = data["AnnualPremium"].quantile(0.25)
         Q3 = data["AnnualPremium"].quantile(0.75)

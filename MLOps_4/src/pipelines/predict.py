@@ -1,6 +1,10 @@
 import os
 import joblib
-from sklearn.metrics import accuracy_score, classification_report, roc_auc_score
+from sklearn.metrics import (
+    accuracy_score,
+    classification_report,
+    roc_auc_score,
+)
 
 
 class Predictor:

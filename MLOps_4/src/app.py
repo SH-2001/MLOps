@@ -27,7 +27,8 @@ async def root():
 @app.post("/predict")
 async def predict(input_data: InputData):
     df = pd.DataFrame(
-        [input_data.model_dump().values()], columns=input_data.model_dump().keys()
+        [input_data.model_dump().values()],
+        columns=input_data.model_dump().keys(),
     )
     pred = model.predict(df)
     return {"predicted_class": int(pred[0])}
