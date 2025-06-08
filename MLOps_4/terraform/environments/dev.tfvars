@@ -9,6 +9,13 @@ s3_buckets = [
   }
 ]
 
+s3_buckets = [
+  {
+    key  = "mlops-course-ehb-mlruns-sh11"
+    tags = {}
+  }
+]
+
 ecr_repositories = [
   {
     key                        = "mlops-course-ehb-repository-sh11"
