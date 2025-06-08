@@ -1,9 +1,7 @@
 import os
 import pandas as pd
-from unittest.mock import patch, mock_open
-
 import pytest
-
+from unittest.mock import patch, mock_open
 from ..pipelines.train import Trainer
 
 
@@ -11,9 +9,20 @@ from ..pipelines.train import Trainer
 def df():
     return pd.DataFrame(
         {
-            "AnnualPremium": [1000, 1200, 1100, 1300, 1250, 1400, 1380, 900],
-            "Age": [30, 40, 35, 45, 50, 55, 56, 31],
-            "RegionID": [1, 2, 1, 2, 1, 2, 2, 1],
+            "AnnualPremium": [
+                1000,
+                1200,
+                1100,
+                1300,
+                1250,
+                1400,
+                1350,
+                1150,
+                1450,
+                1500,
+            ],
+            "Age": [30, 40, 35, 45, 50, 55, 42, 37, 48, 53],
+            "RegionID": [1, 2, 1, 2, 1, 2, 1, 2, 1, 2],
             "Gender": [
                 "Male",
                 "Female",
@@ -22,7 +31,9 @@ def df():
                 "Male",
                 "Female",
                 "Male",
+                "Female",
                 "Male",
+                "Female",
             ],
             "PastAccident": [
                 "Yes",
@@ -31,11 +42,13 @@ def df():
                 "No",
                 "Yes",
                 "No",
+                "Yes",
                 "No",
                 "Yes",
+                "No",
             ],
-            "HasDrivingLicense": [1, 1, 1, 1, 1, 1, 1, 1],
-            "Switch": [0, 1, 0, 1, 0, 1, 1, 0],
+            "HasDrivingLicense": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            "Switch": [0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
         }
     )
 
