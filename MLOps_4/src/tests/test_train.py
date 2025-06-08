@@ -47,7 +47,7 @@ def df():
                 "Yes",
                 "No",
             ],
-            "HasDrivingLicense": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            "HasDrivingLicense": [1]*10,
             "Switch": [0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
         }
     )
@@ -57,7 +57,7 @@ def df():
 def mock_yaml(tmp_path):
     return f"""
     model:
-      name: "RandomForestClassifier"
+      name: "DecisionTreeClassifier"
       params: {{}}
       store_path: "{tmp_path}"
     """
