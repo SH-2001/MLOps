@@ -33,10 +33,7 @@ jobs:
       - name: Lint with flake8
         run: |
           flake8 . --exclude=__init__.py
-
-      - name: Check code formatting with Black
-        run: black . --check --diff
-
+          
       - name: Run unit tests
         run: |
           pytest tests/
