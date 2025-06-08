@@ -1,19 +1,19 @@
 import pytest
 import pandas as pd
-from unittest.mock import patch
+from unittest.mock import patch, mock_open
 from sklearn.dummy import DummyClassifier
 from ..pipelines.predict import Predictor
 
 
 @pytest.fixture
 def sample_data():
-    # Create a small dummy dataframe similar to your expected data format
-    data = {
-        "feature1": [0.1, 0.2, 0.3, 0.4],
-        "feature2": [1, 0, 1, 0],
-        "target": [0, 1, 0, 1],
-    }
-    return pd.DataFrame(data)
+    return pd.DataFrame(
+        {
+            "feature1": [0.1, 0.2, 0.3, 0.4],
+            "feature2": [1, 0, 1, 0],
+            "target": [0, 1, 0, 1],
+        }
+    )
 
 
 def test_feature_target_separator(sample_data):
@@ -24,14 +24,25 @@ def test_feature_target_separator(sample_data):
 
 
 def test_evaluate_model(sample_data):
-    with patch("pipelines.predict.Predictor.load_model") as mocked_load:
-        mocked_load.return_value = DummyClassifier(
-            strategy="most_frequent"
-        ).fit(sample_data.iloc[:, :-1], sample_data.iloc[:, -1])
-        pred = Predictor()  # loads dummy model now
+    # Split sample data
+    X = sample_data[["feature1", "feature2"]]
+    y = sample_data["target"]
 
-        X, y = pred.feature_target_separator(sample_data)
-        accuracy, class_report, roc_auc = pred.evaluate_model(X, y)
+    # Dummy model simulating model.pkl
+    dummy_model = DummyClassifier(strategy="most_frequent")
+    dummy_model.fit(X, y)
 
-        assert 0.0 <= accuracy <= 1.0
-        assert 0.0 <= roc_auc <= 1.0
+    # Mock YAML config and joblib.load
+    mock_yaml = """
+    model:
+      store_path: "fake_path"
+    """
+
+    with patch("builtins.open", mock_open(read_data=mock_yaml)):
+        with patch("joblib.load", return_value=dummy_model):
+            pred = Predictor()
+            accuracy, class_report, roc_auc = pred.evaluate_model(X, y)
+
+            assert 0.0 <= accuracy <= 1.0
+            assert isinstance(class_report, str)
+            assert 0.0 <= roc_auc <= 1.0
