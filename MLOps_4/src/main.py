@@ -17,7 +17,13 @@ def mlflow_main():
     with open("config.yml", "r") as file:
         config = yaml.safe_load(file)
 
-    mlflow.set_experiment("Model Training Experiment")
+    experiment_name = "Model Training Experiment"
+    artifact_location = "s3://mlops-course-ehb-mlruns-sh11-dev/"
+
+    existing_exp = mlflow.get_experiment_by_name(experiment_name)
+    if existing_exp is None:
+        mlflow.create_experiment(name=experiment_name, artifact_location=artifact_location)
+
 
     with mlflow.start_run() as run:
         # Load data
@@ -60,6 +66,17 @@ def mlflow_main():
             model_input=X_train, model_output=trainer.pipeline.predict(X_test)
         )
 
+        # Log metrics
+        model_params = config["model"]["params"]
+        mlflow.log_params(model_params)
+        mlflow.log_metric("accuracy", acc)
+        mlflow.log_metric("roc", roc_auc_score)
+        mlflow.log_metric("precision", report["weighted avg"]["precision"])
+        mlflow.log_metric("recall", report["weighted avg"]["recall"])
+        mlflow.sklearn.log_model(
+            trainer.pipeline, "model", signature=signature
+        )
+
         client = mlflow.MlflowClient()
 
         # Compare against the best previous ROC AUC
@@ -68,6 +85,7 @@ def mlflow_main():
         ).experiment_id
         previous_best = client.search_runs(
             experiment_ids=[ex_id],
+            filter_string=f"run_id != '{run.info.run_id}'",
             order_by=["metrics.roc DESC"],
             max_results=1,
         )
@@ -79,16 +97,6 @@ def mlflow_main():
             best_prev_roc = -1
             logging.info("No previous model found, treating as first run.")
 
-        # Log metrics
-        model_params = config["model"]["params"]
-        mlflow.log_params(model_params)
-        mlflow.log_metric("accuracy", acc)
-        mlflow.log_metric("roc", roc_auc_score)
-        mlflow.log_metric("precision", report["weighted avg"]["precision"])
-        mlflow.log_metric("recall", report["weighted avg"]["recall"])
-        mlflow.sklearn.log_model(
-            trainer.pipeline, "model", signature=signature
-        )
 
         # Register the model
         if roc_auc_score > best_prev_roc:
